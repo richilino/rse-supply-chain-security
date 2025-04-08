@@ -1,5 +1,5 @@
-#envvars:
-#    "GITHUB_AUTH_TOKEN"
+envvars:
+    "GITHUB_AUTH_TOKEN"
 
 rule all:
     input: 
