@@ -21,6 +21,19 @@ def run_scorecard(scorecard_dir, repo_url):
         print(f"❌ Failed to parse JSON output for {repo_url}")
         return None
 
+def load_existing_urls(output_json):
+    existing_urls = set()
+    if os.path.exists(output_json):
+        with open(output_json, 'r', encoding='utf-8') as file:
+            try:
+                data = json.load(file)
+                for entry in data:
+                    repo_name = entry['repo']['name']
+                    existing_urls.add(f"https://{repo_name}")
+            except json.JSONDecodeError:
+                pass  # If the file is empty or not valid JSON, just ignore it
+    return existing_urls
+
 def main(scorecard_dir, input_txt, exclude_urls, output_json):
     # Read TXT and extract exclude URLs
     with open(exclude_urls, 'r', encoding='utf-8') as file:
@@ -28,22 +41,32 @@ def main(scorecard_dir, input_txt, exclude_urls, output_json):
 
     print(f"Excluding {len(exclude_repos)} repositories from local scan...")
 
+    # Load existing URLs from the output JSON
+    existing_urls = load_existing_urls(output_json)
+
+    print(f"Excluding {len(existing_urls)} already scanned repositories...")
+
     # Read input TXT and get list of URLs
     with open(input_txt, 'r', encoding='utf-8') as f:
-        repo_urls = [line.strip() for line in f if line.strip() and line.strip() not in exclude_repos]
-
-    all_results = []
+        repo_urls = [line.strip() for line in f if line.strip() and line.strip() not in exclude_repos and line.strip() not in existing_urls]
 
     print(f"🚀 Running scorecard on {len(repo_urls)} repositories...")
 
-    for i, repo in enumerate(repo_urls[:10], start=1):
+    for i, repo in enumerate(repo_urls, start=1):
         print(f"[{i}/{len(repo_urls)}] Running scorecard on {repo}...")
         result = run_scorecard(scorecard_dir, repo)
         if result:
-            all_results.append(result)
-            # Write results to output JSON after each run (optional but keeps progress)
+            # Append the new result to the output JSON
+            if os.path.exists(output_json):
+                with open(output_json, 'r', encoding='utf-8') as out_f:
+                    existing_data = json.load(out_f)
+            else:
+                existing_data = []
+
+            existing_data.append(result)
+
             with open(output_json, 'w', encoding='utf-8') as out_f:
-                json.dump(all_results, out_f, indent=2)
+                json.dump(existing_data, out_f, indent=4)
 
     print(f"✅ Completed. {len(all_results)} results saved to {output_json}")
 

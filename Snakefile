@@ -50,7 +50,7 @@ rule merge_repository_urls:
         "data/urls/joss_repository_urls.txt",
     output: "data/urls/merged_urls.txt"
     shell:
-        "cat {input} | sort -u > {output}"
+        "cat {input} | sed 's|http://|https://|g' | sort -u > {output}"
 
 
 # OSSF Tracked Repos
