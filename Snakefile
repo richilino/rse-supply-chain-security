@@ -4,7 +4,7 @@ envvars:
 rule all:
     input: 
         "data/api/rsd_repository_data.json"
-        "data/api/joss_repository_data.json",
+        "data/api/joss"
         "data/urls/rsd_repository_urls.txt",
         "data/urls/joss_repository_urls.txt",
         "data/urls/tracked_repository_urls.txt",
@@ -30,13 +30,19 @@ rule filter_rsd_repository_data:
 rule download_joss_repository_data:
     output: "data/api/joss_repository_data.json"
     shell:
-        """curl "https://api.github.com/repos/openjournals/joss-reviews/issues?state=all&labels=accepted" -o {output}"""
+        """curl "https://api.github.com/repos/openjournals/joss-reviews/issues?state=all&labels=accepted&per_page=100" -o {output}"""
 
 rule filter_joss_repository_data:
-    input: "data/api/joss_repository_data.json"
+    input: "data/api/joss"
     output: "data/urls/joss_repository_urls.txt"
     shell:
-        "cat {input} | jq '[.[] | {{url: .body}}]' | grep -Eo \"(http|https)://github.com/[a-zA-Z0-9_-]*/[a-zA-Z0-9_-]*\" | sort -u > {output}"
+        """
+        for file in {input}/joss_repository_data.*.json; do
+            if [ -f \"$file\" ]; then
+                cat \"$file\" | jq '[.[] | {{url: .body}}]' | grep -Eo \"(http|https)://github.com/[a-zA-Z0-9_-]*/[a-zA-Z0-9_-]*\"
+            fi
+        done | sort -u > {output}
+        """
 
 rule merge_repository_urls:
     input: 

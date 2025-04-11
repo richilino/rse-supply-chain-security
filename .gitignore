@@ -1,5 +1,5 @@
 /venv
 /.snakemake
-/plots
-/data
+/plots/*
+/data/*
 .env
