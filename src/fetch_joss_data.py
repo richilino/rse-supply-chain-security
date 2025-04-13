@@ -10,8 +10,8 @@ def fetch_issues(api_url, output_dir):
     per_page = 100
     while True:
         # Construct the URL with pagination parameters
-        url = f"{api_url}?state=all&labels=accepted&per_page={per_page}&page={page}"
-        response = requests.get(url)
+        params = [("state", "all"),("labels", "accepted"),("per_page", per_page), ("page", page)]
+        response = requests.get(api_url, params=params, headers={"Authorization": f"Bearer {os.environ["GITHUB_AUTH_TOKEN"]}"})
 
         # Check if the request was successful
         if response.status_code != 200:

@@ -15,9 +15,9 @@ rule all:
 # RSD
 
 rule download_rsd_repository_data:
-    output: "data/api/rsd_repository_data.json"
+    output: "data/api/joss"
     shell: 
-        """curl https://research-software-directory.org/api/v1/repository_url -o {output}"""
+        """python src/fetch_joss_data {output}"""
 
 rule filter_rsd_repository_data:
     input: "data/api/rsd_repository_data.json"
