@@ -10,38 +10,23 @@
 
 ## Individual Mappings
 
-### Collaborator 1
+### Rebecca Beyer
 
 **Mapping:**
 
 - **Threat A:** [Example or Justification]
-- **Threat B:** [Example or Justification]
-- **Threat C:** [Example or Justification]
-- **Threat D:** [Example or Justification]
-- **Threat E:** [Example or Justification]
-- **Threat F:** [Example or Justification]
-- **Threat G:** [Example or Justification]
-- **Threat H:** [Example or Justification]
-- **Threat I:** [Example or Justification]
+- **Threat H:** sichert sichere Abhängigkeiten -> verhindert Einschleusen kompromittierter Dependencies
 
 **Notes:**
 
 - [Note 1]
 - [Note 2]
 
-### Collaborator 2
+### Richard Hegewald
 
 **Mapping:**
 
-- **Threat A:** [Example or Justification]
-- **Threat B:** [Example or Justification]
-- **Threat C:** [Example or Justification]
-- **Threat D:** [Example or Justification]
-- **Threat E:** [Example or Justification]
-- **Threat F:** [Example or Justification]
-- **Threat G:** [Example or Justification]
-- **Threat H:** [Example or Justification]
-- **Threat I:** [Example or Justification]
+- **Threat H:** Malicious package use through developer inattention.
 
 **Notes:**
 
