@@ -1,10 +1,12 @@
 import json
 import argparse
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import seaborn as sns
 import os
 import statistics
 import numpy as np
+import pandas as pd
 
 RISK_LEVELS = {
     "Dangerous-Workflow": "Critical",
@@ -27,6 +29,16 @@ RISK_LEVELS = {
     "License": "Low"
 }
 
+BINARY_CHECKS = ["Packaging", "Fuzzing", "Dependency-Update-Tool", "Dangerous-Workflow"]
+
+BINARY_LABELS = {
+    "Packaging": ["No Package", "Package Found"],
+    "Fuzzing": ["Not Implemented", "Implemented"],
+    "Dependency-Update-Tool": ["Not Used", "Used"],
+    "Dangerous-Workflow": ["Safe Workflow", "Dangerous Workflow"]
+}
+
+
 def load_json_data(json_files):
     """Load and combine JSON data from multiple files."""
     combined_data = []
@@ -38,6 +50,7 @@ def load_json_data(json_files):
             else:
                 print(f"⚠️ Warning: {json_file} does not contain a list.")
     return combined_data
+
 
 def extract_scores(data):
     """Extract general scores and individual check scores, treating -1 as NA."""
@@ -53,18 +66,69 @@ def extract_scores(data):
             check_name = check.get('name', 'Unknown Check')
             check_score = check.get('score', 0)
 
-            if check_name == "Packaging": # Für Packaging: -1 als 0 zählen, da -1 bedeutet kein Packaging gefunden
-                if check_score == -1:
-                    check_score = 0
-                check_scores.setdefault(check_name, []).append(check_score)
-            else:
+            # if check_name == "Packaging": # Für Packaging: -1 als 0 zählen, da -1 bedeutet kein Packaging gefunden
+            #     if check_score == -1:
+            #         check_score = 0
+            #     check_scores.setdefault(check_name, []).append(check_score)
+            #else:
                 # Für alle anderen Checks: -1 überspringen
-                if check_score == -1: # Skip N/A scores
-                    continue
-                check_scores.setdefault(check_name, []).append(check_score)
+            if check_score == -1: # Skip N/A scores
+                continue
+            else: check_scores.setdefault(check_name, []).append(check_score)
 
     return general_scores, check_scores
 
+
+def create_stats_table(general_scores, check_scores, total_repositories):
+    """
+    Create a DataFrame with median and standard deviation for all Security Checks,
+    sorted by median score from lowest to highest.
+    """
+    stats_list = []
+    
+    for check_name, scores in check_scores.items():
+        if len(scores) > 0:
+            stats_list.append({
+                'Security Check': check_name,
+                'Score 0–10 [%]':round((len(scores)/total_repositories)*100,2),
+                'Mean': round(np.mean(scores),2),
+                'Std Dev': round(np.std(scores), 2),
+                'Risk Level': RISK_LEVELS.get(check_name, "Unknown")
+            })
+    
+    stats_df = pd.DataFrame(stats_list)
+    stats_df = stats_df.sort_values(by='Mean')
+    stats_df = stats_df.reset_index(drop=True)
+
+    if len(general_scores) > 0:
+        general_df = pd.DataFrame([{
+            'Security Check': 'GENERAL SCORE',
+            'Score 0–10 [%]': round((len(scores)/total_repositories)*100,2),
+            'Mean': round(np.mean(general_scores),2),
+            'Std Dev': round(np.std(general_scores),2),
+            'Risk Level': ""
+        }])
+        stats_df = pd.concat([stats_df, general_df], ignore_index=True)
+
+    return stats_df
+
+
+def plot_stats_table(stats_df, output_dir):
+    """ Save Stats Tabelle containing Score 0–10 [%], std, median, risfactor of all check_names and generel_score as PNG """
+    fig, ax = plt.subplots(figsize=(10, len(stats_df)*0.5 + 2))
+    ax.axis('off')
+    table = ax.table(cellText=stats_df.values,
+                     colLabels=stats_df.columns,
+                     cellLoc='center',
+                     loc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(12)
+    table.scale(1, 1.5)
+
+    path = os.path.join(output_dir, 'stats_table.png')
+    plt.tight_layout()
+    plt.savefig(path, dpi=300, bbox_inches='tight')
+    plt.close()
 
 
 def save_general_scores_plot(general_scores, output_dir):
@@ -96,107 +160,137 @@ def save_general_scores_plot(general_scores, output_dir):
 #         plt.savefig(os.path.join(output_dir, filename))
 #         plt.close()
 
-def save_all_checks_multiplot(check_scores, output_dir):
-    """Save a large multiplot containing all check score distributions."""
-    import numpy as np
+
+def _plot_histogram_for_check(ax, row, check_scores):
+    check_name = row['Security Check']
+    scores = check_scores[check_name]
+    counts, bins, patches = ax.hist(scores, bins=range(12), color='steelblue', edgecolor='none', width=0.85)
+
+    bin_centers = 0.5 * (bins[:-1] + bins[1:])
+    total = counts.sum()
+
+    ymin, ymax = ax.get_ylim()
+    offset = (ymax - ymin) * 0.01 
+    for count, x in zip(counts, bin_centers):
+        percent = count / total * 100
+        if count > 0:
+            ax.text(x, count + offset, f'{percent:.1f}%', ha='center', va='bottom', fontsize=12, color='black')
+
+    ax.grid(axis='x')
+    ax.set_xticks(bin_centers)
+    ax.set_xticklabels([str(i) for i in range(11)], fontsize=16)
+    ax.set_xlabel('Security Score', fontsize=16)
+    ax.set_ylabel('Number of Repositories', fontsize=16)
+    ax.set_yscale('log', nonpositive='clip')
+    ax.set_yticks([1,10, 100, 1000, 10000])
+    ax.set_yticklabels([1, 10, 100, 1000, 10000])
+    ax.set_title(f"{check_name} (n={len(scores)})\nMean: {row['Mean']}, Risk: {row['Risk Level']}", fontsize=20)
+
+    for spine in ax.spines.values():
+        spine.set_edgecolor('black')
+
+    ax.grid(axis='y')
+    ax.yaxis.set_minor_locator(ticker.LogLocator(base=10.0, subs=np.arange(1.0, 10.0), numticks=100))
+    ax.yaxis.set_minor_formatter(ticker.NullFormatter()) 
+    ax.yaxis.grid(True, which='major', linestyle='-', linewidth=1, color="#AAAAAA")
+    ax.yaxis.grid(True, which='minor', linestyle=':', linewidth=0.8, color= '#AAAAAA')
+
+
+def _plot_binaer_histogram_for_check(ax, row, check_scores):
+    """Plottet binäre Checks mit check-spezifischen Labels."""
+    check_name = row['Security Check']
+    scores = check_scores[check_name]
+    labels = BINARY_LABELS[check_name]
+
+    count_0 = sum(s == 0 for s in scores)
+    count_1 = sum(s == 10 for s in scores)
+    df = pd.DataFrame({
+        "Status": [labels[0], labels[1]],
+        "Count": [count_0, count_1]
+    })
+
+    sns.barplot(x="Status", y="Count", data=df, ax=ax, color='steelblue',width=0.2)
+    ax.set_xticklabels(BINARY_LABELS[check_name], fontsize=12)
+    ax.set_xlabel('Security Status', fontsize=16)
+    ax.set_ylabel('Number of Repositories', fontsize=16)
+    ax.set_title(f"{check_name} (n={len(scores)})\nMean: {row['Mean']}, Risk: {row['Risk Level']}", fontsize=20)
+
+    total = count_0 + count_1
+    ymin, ymax = ax.get_ylim()
+    offset = (ymax - ymin) * 0.01 
+
+    for i, count in enumerate([count_0, count_1]):
+        percent = count / total * 100
+        if count > 0:
+            ax.text(i, count + offset , f'{percent:.1f}%', ha='center', va='bottom', fontsize=12, color='black')
+
+    ax.set_yscale('log', nonpositive='clip')
+    ax.grid(axis='y')
+    for spine in ax.spines.values():
+        spine.set_edgecolor('black')
+    ax.set_yticks([1, 10, 100, 1000, 10000])
+    ax.set_yticklabels([1, 10, 100, 1000, 10000])
+    ax.yaxis.set_minor_locator(ticker.LogLocator(base=10.0, subs=np.arange(1.0, 10.0), numticks=100))
+    ax.yaxis.set_minor_formatter(ticker.NullFormatter())  
+    ax.yaxis.grid(True, which='major', linestyle='-', linewidth=1, color='#AAAAAA')
+    ax.yaxis.grid(True, which='minor', linestyle=':', linewidth=0.8,color='#AAAAAA' )
+
+
+def save_all_checks_multiplot(check_scores, stats_df, output_dir):
+    """Save a plot containing all check score distributions."""
     sns.set(style="whitegrid")
+
+    filtered_stats_df = stats_df[stats_df['Security Check'] != 'GENERAL SCORE']
     num_checks = len(check_scores)
     num_columns = 3
     num_rows = (num_checks + num_columns - 1) // num_columns
 
-    fig, axes = plt.subplots(num_rows, num_columns, figsize=(15, num_rows * 4))
+    fig, axes = plt.subplots(num_rows, num_columns, figsize=(25, num_rows * 4))
     axes = axes.flatten()
 
-    for i, (check_name, scores) in enumerate(check_scores.items()):
+    for i, (_, row) in enumerate(filtered_stats_df.iterrows()):
         ax = axes[i]
-        counts, bins, patches = ax.hist(scores, bins=range(12), color='steelblue', edgecolor='black')  # bins=range(12) für 0-10
-        bin_centers = 0.5 * (bins[:-1] + bins[1:])
+        check_name = row['Security Check']
+        scores = check_scores[check_name]
 
-        ax.grid(axis='x') 
-        ax.set_xticks(bin_centers)
-        ax.set_xticklabels([str(i) for i in range(11)], fontsize=12)
-        ax.set_xlabel('Security Score', fontsize=14)
-        if check_name == "Packaging":
-            xticklabels = ["0*"] + [str(i) for i in range(1, 11)]
+        if check_name in BINARY_CHECKS:
+            _plot_binaer_histogram_for_check(ax, row, check_scores)   
         else:
-            xticklabels = [str(i) for i in range(11)]
-        ax.set_xticklabels(xticklabels, fontsize=12)
-
-        ax.set_ylabel('Number of Repositories', fontsize=14)
-        ax.set_yscale('log')
-        ax.set_yticks([1, 10, 100, 1000, 4000])
-        ax.set_yticklabels([1,10, 100, 1000, 4000])   #ax.set_yticklabels(['0','1', '2', '3', '4'], fontsize=12)
-
-        if check_name == "Packaging":
-            patches[0].set_facecolor("skyblue")
-        
-        ax.set_title(f"{check_name} (n={len(scores)})", fontsize=18)
-
+            _plot_histogram_for_check(ax, row, check_scores)
 
     for j in range(len(check_scores), len(axes)):
         fig.delaxes(axes[j])
 
     path = os.path.join(output_dir, 'all_checks_distribution.png')
-    plt.tight_layout()
+    plt.tight_layout(h_pad=4, w_pad=9)
     plt.savefig(path)
     plt.close()
 
-def create_stats_table(general_scores, check_scores):
+
+def plot_high_risk_checks(check_scores, stats_df, output_dir):
     """
-    Create a DataFrame with median and standard deviation for all check names,
-    sorted by median score from lowest to highest.
+    Save a plot with the high-risk checks (High or Critical).
     """
-    import pandas as pd
+    sns.set(style="whitegrid")
+    high_risk_df = stats_df[(stats_df['Risk Level'] == 'High') | (stats_df['Risk Level'] == 'Critical')]
+
+    fig, axes = plt.subplots(3, 3, figsize=(25, 3 * 4))
+    axes = axes.flatten()
+    for i, (_, row) in enumerate(high_risk_df.iterrows()):
+        ax = axes[i]
+        check_name = row['Security Check']
+
+        if check_name in BINARY_CHECKS:
+            _plot_binaer_histogram_for_check(ax, row, check_scores)   
+        else:
+            _plot_histogram_for_check(ax, row, check_scores)
     
-    stats_list = []
+    for j in range(len(high_risk_df), 3):
+        axes[j].set_visible(False)
     
-    # Calculate median and std for each check
-    for check_name, scores in check_scores.items():
-        if len(scores) > 0:
-            stats_list.append({
-                'Check Name': check_name,
-                'n': len(scores),
-                'Mean': round(np.mean(scores),2),
-                'Median': round(np.median(scores), 2),
-                'Std Dev': round(np.std(scores), 2),
-                'Risk Level': RISK_LEVELS.get(check_name, "Unknown")
-            })
-    
-    # Create DataFrame
-    stats_df = pd.DataFrame(stats_list)
-    stats_df = stats_df.sort_values(by='Mean')
-    stats_df = stats_df.reset_index(drop=True)
-
-    # General Scores berechnen und als separate Zeile hinzufügen
-    if len(general_scores) > 0:
-        general_df = pd.DataFrame([{
-            'Check Name': 'GENERAL SCORE',
-            'n': len(general_scores),
-            'Median': round(np.median(general_scores),2),
-            'Mean': round(np.mean(general_scores),2),
-            'Std Dev': round(np.std(general_scores),2),
-            'Risk Level': ""
-        }])
-        stats_df = pd.concat([stats_df, general_df], ignore_index=True)
-
-    return stats_df
-
-
-def plot_stats_table(stats_df, output_dir):
-    """ Save Stats Tabelle containing mean, std, median, risfactor of all check_names and generel_score as PNG """
-    fig, ax = plt.subplots(figsize=(10, len(stats_df)*0.5 + 2))
-    ax.axis('off')
-    table = ax.table(cellText=stats_df.values,
-                     colLabels=stats_df.columns,
-                     cellLoc='center',
-                     loc='center')
-    table.auto_set_font_size(False)
-    table.set_fontsize(12)
-    table.scale(1, 1.5)
-
-    path = os.path.join(output_dir, 'stats_table.png')
-    plt.tight_layout()
-    plt.savefig(path, dpi=300, bbox_inches='tight')
+    path = os.path.join(output_dir, 'high_risk_checks.png')
+    plt.tight_layout(h_pad=2, w_pad=8)
+    plt.savefig(path)
     plt.close()
 
 
@@ -205,8 +299,6 @@ def plot_top_high_risk_checks(check_scores, stats_df, output_dir):
     Save a plot with the 3 high-risk checks (High or Critical) that have the highest mean score.
     Shows these three plots side by side.
     """
-    import numpy as np
-    import seaborn as sns
     
     sns.set(style="whitegrid")
     high_risk_df = stats_df[(stats_df['Risk Level'] == 'High') | (stats_df['Risk Level'] == 'Critical')]
@@ -214,30 +306,14 @@ def plot_top_high_risk_checks(check_scores, stats_df, output_dir):
     
     fig, axes = plt.subplots(1, 3, figsize=(20, 5))
     for i, (_, row) in enumerate(top_checks.iterrows()):
-        check_name = row['Check Name']
-        scores = check_scores[check_name]
-        
         ax = axes[i]
-        counts, bins, patches = ax.hist(scores, bins=range(12), color='steelblue', edgecolor='black')
-        bin_centers = 0.5 * (bins[:-1] + bins[1:])
-        
-        ax.grid(axis='x')
-        ax.set_xticks(bin_centers)
-        ax.set_xlabel('Security Score', fontsize=14)
-        
-        if check_name == "Packaging":
-            xticklabels = ["0*"] + [str(i) for i in range(1, 11)]
-            patches[0].set_facecolor("skyblue")
+        check_name = row['Security Check']
+
+        if check_name in BINARY_CHECKS:
+            _plot_binaer_histogram_for_check(ax, row, check_scores)   
         else:
-            xticklabels = [str(i) for i in range(11)]
+            _plot_histogram_for_check(ax, row, check_scores)
         
-        ax.set_xticklabels(xticklabels, fontsize=12)
-        ax.set_ylabel('Number of Repositories', fontsize=14)
-        ax.set_yscale('log')
-        ax.set_yticks([1, 10, 100, 1000, 4000])
-        ax.set_yticklabels([1, 10, 100, 1000, 4000])
-        ax.set_title(f"{check_name} (n={len(scores)})\nMean: {row['Mean']}, Risk: {row['Risk Level']}", fontsize=16)
-    
     for j in range(len(top_checks), 3):
         axes[j].set_visible(False)
     
@@ -252,8 +328,6 @@ def plot_lowest_high_risk_checks(check_scores, stats_df, output_dir):
     Save a plot with the 3 high-risk checks (High or Critical) that have the lowest mean score.
     Shows these three plots side by side.
     """
-    import numpy as np
-    import seaborn as sns
     
     sns.set(style="whitegrid")
     high_risk_df = stats_df[(stats_df['Risk Level'] == 'High') | (stats_df['Risk Level'] == 'Critical')]
@@ -261,29 +335,12 @@ def plot_lowest_high_risk_checks(check_scores, stats_df, output_dir):
     
     fig, axes = plt.subplots(1, 3, figsize=(20, 5))
     for i, (_, row) in enumerate(lowest_checks.iterrows()):
-        check_name = row['Check Name']
-        scores = check_scores[check_name]
-        
         ax = axes[i]
-        counts, bins, patches = ax.hist(scores, bins=range(12), color='steelblue', edgecolor='black')
-        bin_centers = 0.5 * (bins[:-1] + bins[1:])
-        
-        ax.grid(axis='x')
-        ax.set_xticks(bin_centers)
-        ax.set_xlabel('Security Score', fontsize=14)
-        
-        if check_name == "Packaging":
-            xticklabels = ["0*"] + [str(i) for i in range(1, 11)]
-            patches[0].set_facecolor("skyblue")
+        check_name = row['Security Check']
+        if check_name in BINARY_CHECKS:
+            _plot_binaer_histogram_for_check(ax, row, check_scores)   
         else:
-            xticklabels = [str(i) for i in range(11)]
-        
-        ax.set_xticklabels(xticklabels, fontsize=12)
-        ax.set_ylabel('Number of Repositories', fontsize=14)
-        ax.set_yscale('log')
-        ax.set_yticks([1, 10, 100, 1000, 4000])
-        ax.set_yticklabels([1, 10, 100, 1000, 4000])
-        ax.set_title(f"{check_name} (n={len(scores)})\nMean: {row['Mean']}, Risk: {row['Risk Level']}", fontsize=16)
+            _plot_histogram_for_check(ax, row, check_scores)
     
     for j in range(len(lowest_checks), 3):
         axes[j].set_visible(False)
@@ -304,6 +361,7 @@ def main():
         os.makedirs(args.output_dir)
 
     data = load_json_data(args.json_files)
+    total_repositories = len(data)
 
     print(f"Analyzing {len(data)} repositories...")
 
@@ -312,19 +370,18 @@ def main():
     print(f"Median Score: {statistics.fmean(general_scores)}")
     print(f"Quantiles Score: {statistics.quantiles(general_scores)}")
 
-    save_general_scores_plot(general_scores, args.output_dir)
-    #save_individual_check_plots(check_scores, args.output_dir)
-    save_all_checks_multiplot(check_scores, args.output_dir)
-
-    stats_df = create_stats_table(general_scores, check_scores)
+    stats_df = create_stats_table(general_scores, check_scores, total_repositories)
     plot_stats_table(stats_df, args.output_dir)
 
+    save_general_scores_plot(general_scores, args.output_dir)
+    #save_individual_check_plots(check_scores, args.output_dir)
+   
     plot_top_high_risk_checks(check_scores, stats_df, args.output_dir)
     plot_lowest_high_risk_checks(check_scores, stats_df, args.output_dir)
+    plot_high_risk_checks(check_scores, stats_df, args.output_dir)
+    save_all_checks_multiplot(check_scores, stats_df, args.output_dir)
 
     print(f"✅ Plots saved to {args.output_dir}")
-
-
 
 
 if __name__ == "__main__":
