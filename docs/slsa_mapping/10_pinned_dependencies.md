@@ -45,16 +45,9 @@
 
 **Final Mapping:**
 
-- **Threat A:** [Consolidated Justification]
-- **Threat B:** [Consolidated Justification]
-- **Threat C:** [Consolidated Justification]
-- **Threat D:** [Consolidated Justification]
-- **Threat E:** [Consolidated Justification]
-- **Threat F:** [Consolidated Justification]
-- **Threat G:** [Consolidated Justification]
-- **Threat H:** [Consolidated Justification]
-- **Threat I:** [Consolidated Justification]
+- **Threat D:** Build from unofficial paramters.
+- **Threat H:** Dependency Confusion
 
 ---
 
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.
+**Note:** FAIR Criterion

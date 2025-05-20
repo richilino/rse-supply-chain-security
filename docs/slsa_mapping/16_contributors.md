@@ -28,7 +28,7 @@
 **Mapping:**
 
 - **Threat A:** Loss of user trust.
-- **Threat B:** Submit change without review
+- **Threat B:** Submit change without review.
 
 **Notes:**
 
@@ -45,15 +45,8 @@
 
 **Final Mapping:**
 
-- **Threat A:** [Consolidated Justification]
-- **Threat B:** [Consolidated Justification]
-- **Threat C:** [Consolidated Justification]
-- **Threat D:** [Consolidated Justification]
-- **Threat E:** [Consolidated Justification]
-- **Threat F:** [Consolidated Justification]
-- **Threat G:** [Consolidated Justification]
-- **Threat H:** [Consolidated Justification]
-- **Threat I:** [Consolidated Justification]
+- **Threat A:** Increased trust and probability of finding vulnerabilities.
+- **Threat B:** Submit change without review.
 
 ---
 

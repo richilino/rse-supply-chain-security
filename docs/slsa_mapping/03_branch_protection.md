@@ -43,15 +43,7 @@
 
 **Final Mapping:**
 
-- **Threat A:** [Consolidated Justification]
-- **Threat B:** [Consolidated Justification]
-- **Threat C:** [Consolidated Justification]
-- **Threat D:** [Consolidated Justification]
-- **Threat E:** [Consolidated Justification]
-- **Threat F:** [Consolidated Justification]
-- **Threat G:** [Consolidated Justification]
-- **Threat H:** [Consolidated Justification]
-- **Threat I:** [Consolidated Justification]
+- **Threat B:** Directly Submit without review. Highly-permissioned actors bypasses or disables controls
 
 ---
 

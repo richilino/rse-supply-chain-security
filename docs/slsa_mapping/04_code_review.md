@@ -45,15 +45,8 @@
 
 **Final Mapping:**
 
-- **Threat A:** [Consolidated Justification]
-- **Threat B:** [Consolidated Justification]
-- **Threat C:** [Consolidated Justification]
-- **Threat D:** [Consolidated Justification]
-- **Threat E:** [Consolidated Justification]
-- **Threat F:** [Consolidated Justification]
-- **Threat G:** [Consolidated Justification]
-- **Threat H:** [Consolidated Justification]
-- **Threat I:** [Consolidated Justification]
+- **Threat A:** High numbers of users / reviewers may increase likelihood that bad code is detected during review.
+- **Threat B:** Submit change without review.
 
 ---
 

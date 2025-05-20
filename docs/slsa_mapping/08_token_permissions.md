@@ -44,15 +44,8 @@
 
 **Final Mapping:**
 
-- **Threat A:** [Consolidated Justification]
-- **Threat B:** [Consolidated Justification]
-- **Threat C:** [Consolidated Justification]
-- **Threat D:** [Consolidated Justification]
-- **Threat E:** [Consolidated Justification]
-- **Threat F:** [Consolidated Justification]
-- **Threat G:** [Consolidated Justification]
-- **Threat H:** [Consolidated Justification]
-- **Threat I:** [Consolidated Justification]
+- **Threat B:** Use bot account to submit change
+- **Threat C:** Unauthorized workflow triggering.
 
 ---
 

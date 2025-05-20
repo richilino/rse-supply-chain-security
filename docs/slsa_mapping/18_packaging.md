@@ -1,10 +1,10 @@
 # Consolidated Mapping of OpenSSF Scorecard Check to SLSA Threats
 
-## Scorecard Check: Security Policy
+## Scorecard Check: Packaging
 
 **Risk:** Medium
 
-**Description:** This check tries to determine if the project has published a security policy. It works by looking for a file named SECURITY.md (case-insensitive) in a few well-known directories.
+**Description:** Does the project build and publish official packages from CI/CD, e.g. GitHub Publishing?
 
 ---
 
@@ -14,7 +14,8 @@
 
 **Mapping:**
 
-- **Threat I:** Clear guidelines help to recognise and respond to vulnerabilities
+- **Threat A:** validating official package registries? (metadata documents provenance?)
+- **Threat I:** easier patching of bugs with updates?
 
 **Notes:**
 
@@ -25,7 +26,8 @@
 
 **Mapping:**
 
-- **Threat A:** Loss of user trust.
+- **Threat E:** Tamper with artifact during build.
+- **Threat F:** Tamper with artifact after CI/CD.
 
 **Notes:**
 
@@ -42,7 +44,8 @@
 
 **Final Mapping:**
 
-- **Threat A:** Loss of user trust.
+- **Threat E:** Tamper with artifact during build.
+- **Threat F:** Tamper with artifact after CI/CD.
 
 ---
 
