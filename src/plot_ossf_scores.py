@@ -174,17 +174,20 @@ def _plot_histogram_for_check(ax, row, check_scores):
     for count, x in zip(counts, bin_centers):
         percent = count / total * 100
         if count > 0:
-            ax.text(x, count + offset, f'{percent:.1f}%', ha='center', va='bottom', fontsize=12, color='black')
+            ax.text(x, count + offset, f'{percent:.1f}%', ha='center', va='bottom', fontsize=14, color='black')
 
     ax.grid(axis='x')
     ax.set_xticks(bin_centers)
     ax.set_xticklabels([str(i) for i in range(11)], fontsize=16)
-    ax.set_xlabel('Security Score', fontsize=16)
-    ax.set_ylabel('Number of Repositories', fontsize=16)
+    ax.set_xlabel('Security Score', fontsize=18)
+    ax.set_ylabel('Number of Repositories', fontsize=18)
     ax.set_yscale('log', nonpositive='clip')
     ax.set_yticks([1,10, 100, 1000, 10000])
-    ax.set_yticklabels([1, 10, 100, 1000, 10000])
-    ax.set_title(f"{check_name} (n={len(scores)})\nMean: {row['Mean']}, Risk: {row['Risk Level']}", fontsize=20)
+    ax.set_yticklabels([1, 10, 100, 1000, 10000], fontsize= 16)
+    ax.text(0.5, 1.12, f"{check_name}", transform=ax.transAxes,
+            fontsize=20, ha='center', va='bottom', fontweight='bold')
+    ax.text(0.5, 1.10, f"n={len(scores)}    Mean={row['Mean']}    Risk: {row['Risk Level']}",
+            transform=ax.transAxes, fontsize=18, ha='center', va='top')
 
     for spine in ax.spines.values():
         spine.set_edgecolor('black')
@@ -210,10 +213,13 @@ def _plot_binaer_histogram_for_check(ax, row, check_scores):
     })
 
     sns.barplot(x="Status", y="Count", data=df, ax=ax, color='steelblue',width=0.2)
-    ax.set_xticklabels(BINARY_LABELS[check_name], fontsize=12)
-    ax.set_xlabel('Security Status', fontsize=16)
-    ax.set_ylabel('Number of Repositories', fontsize=16)
-    ax.set_title(f"{check_name} (n={len(scores)})\nMean: {row['Mean']}, Risk: {row['Risk Level']}", fontsize=20)
+    ax.set_xticklabels(BINARY_LABELS[check_name], fontsize=16)
+    ax.set_xlabel('Security Status', fontsize=18)
+    ax.set_ylabel('Number of Repositories', fontsize=18)
+    ax.text(0.5, 1.13, f"{check_name}", transform=ax.transAxes,
+            fontsize=20, ha='center', va='bottom', fontweight='bold')
+    ax.text(0.5, 1.10, f"n={len(scores)}    Mean={row['Mean']}    Risk: {row['Risk Level']}",
+            transform=ax.transAxes, fontsize=18, ha='center', va='top')
 
     total = count_0 + count_1
     ymin, ymax = ax.get_ylim()
@@ -222,14 +228,14 @@ def _plot_binaer_histogram_for_check(ax, row, check_scores):
     for i, count in enumerate([count_0, count_1]):
         percent = count / total * 100
         if count > 0:
-            ax.text(i, count + offset , f'{percent:.1f}%', ha='center', va='bottom', fontsize=12, color='black')
+            ax.text(i, count + offset , f'{percent:.1f}%', ha='center', va='bottom', fontsize=14, color='black')
 
     ax.set_yscale('log', nonpositive='clip')
     ax.grid(axis='y')
     for spine in ax.spines.values():
         spine.set_edgecolor('black')
     ax.set_yticks([1, 10, 100, 1000, 10000])
-    ax.set_yticklabels([1, 10, 100, 1000, 10000])
+    ax.set_yticklabels([1, 10, 100, 1000, 10000], fontsize= 16)
     ax.yaxis.set_minor_locator(ticker.LogLocator(base=10.0, subs=np.arange(1.0, 10.0), numticks=100))
     ax.yaxis.set_minor_formatter(ticker.NullFormatter())  
     ax.yaxis.grid(True, which='major', linestyle='-', linewidth=1, color='#AAAAAA')
@@ -257,6 +263,7 @@ def save_all_checks_multiplot(check_scores, stats_df, output_dir):
             _plot_binaer_histogram_for_check(ax, row, check_scores)   
         else:
             _plot_histogram_for_check(ax, row, check_scores)
+        
 
     for j in range(len(check_scores), len(axes)):
         fig.delaxes(axes[j])
@@ -284,6 +291,7 @@ def plot_high_risk_checks(check_scores, stats_df, output_dir):
             _plot_binaer_histogram_for_check(ax, row, check_scores)   
         else:
             _plot_histogram_for_check(ax, row, check_scores)
+        
     
     for j in range(len(high_risk_df), 3):
         axes[j].set_visible(False)
