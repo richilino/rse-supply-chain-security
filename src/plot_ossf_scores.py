@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import seaborn as sns
 import os
+from scipy.stats import gaussian_kde
 import statistics
 import numpy as np
 import pandas as pd
@@ -133,17 +134,44 @@ def plot_stats_table(stats_df, output_dir):
 
 def save_general_scores_plot(general_scores, output_dir):
     """Save the distribution of general scores as a PNG image."""
+    fig, ax = plt.subplots(figsize=(8, 4))
 
-    plt.figure(figsize=(8, 6))
-    sns.violinplot(x=general_scores, linecolor="skyblue",color="skyblue" ,inner="box", inner_kws=dict(color="black", box_width=17, whis_width=2), linewidth=1)
-    plt.xticks(ticks=range(11), labels=[str(i) for i in range(11)], fontsize=16)
-    plt.xlabel('Security Score', fontsize=18)
-    plt.yticks(fontsize=16)
+    # Barplots
+    boxplots_colors = ['slategray']
+    unique_vals, counts = np.unique(general_scores, return_counts=True)
+    ax.bar(unique_vals, counts, width=0.08, color='steelblue', alpha=0.4, label='Histogramm')
+
+    # KDE-curve
+    xs = np.linspace(min(general_scores), max(general_scores), 200)
+    kde = gaussian_kde(general_scores)
+    ax.plot(xs, kde(xs) * len(general_scores) * 0.08, color='black', lw=1.5, label='KDE', alpha=0.5)  
+
+    # Boxplot
+    bp = ax.boxplot(general_scores, 
+                    patch_artist=True, 
+                    vert=False, 
+                    widths=10, 
+                    positions=[-10], 
+                    boxprops=dict(facecolor='slategray', edgecolor='black', linewidth=1, alpha=0.4),
+                    flierprops=dict(marker='o', markersize=2, markerfacecolor='white', markeredgecolor='black', alpha=0.2),
+                    medianprops=dict(linewidth=1, color='black')
+                    )
+
+    # general plot settings
+    ax.set_ylim(-25, max(counts)*1.1 +20)
+    plt.xticks(ticks=range(11), labels=[str(i) for i in range(11)], fontsize=12)
+    plt.xlabel('Security Score', fontsize=14)
+    yticks= [0,50, 100, 150, 200]
+    plt.yticks(ticks= yticks, labels=[str(i) for i in yticks], fontsize=12)
+    plt.ylabel('Count of Repositories', fontsize=14)
+    plt.tight_layout()
 
     path = os.path.join(output_dir, 'general_scores_distribution.png')
     plt.tight_layout()
     plt.savefig(path)
     plt.close()
+
+
 
 # def save_individual_check_plots(check_scores, output_dir):
 #     """Save the distribution of individual check scores as separate PNG images."""
