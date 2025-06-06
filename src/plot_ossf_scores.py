@@ -168,7 +168,6 @@ def save_general_scores_plot(general_scores, output_dir):
 
     path = os.path.join(output_dir, 'general_scores_distribution.png')
     plt.tight_layout()
-    plt.show()
     plt.savefig(path)
     plt.close()
 
