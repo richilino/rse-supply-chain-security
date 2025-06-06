@@ -139,7 +139,7 @@ def save_general_scores_plot(general_scores, output_dir):
     # Barplots
     boxplots_colors = ['slategray']
     unique_vals, counts = np.unique(general_scores, return_counts=True)
-    ax.bar(unique_vals, counts, width=0.08, color='steelblue', alpha=0.4, label='Histogramm')
+    ax.bar(unique_vals, counts, width=0.08, color='steelblue', alpha=0.6, label='Histogramm')
 
     # KDE-curve
     xs = np.linspace(min(general_scores), max(general_scores), 200)
@@ -163,11 +163,12 @@ def save_general_scores_plot(general_scores, output_dir):
     plt.xlabel('Security Score', fontsize=14)
     yticks= [0,50, 100, 150, 200]
     plt.yticks(ticks= yticks, labels=[str(i) for i in yticks], fontsize=12)
-    plt.ylabel('Count of Repositories', fontsize=14)
+    plt.ylabel('Repositories [n]', fontsize=14)
     plt.tight_layout()
 
     path = os.path.join(output_dir, 'general_scores_distribution.png')
     plt.tight_layout()
+    plt.show()
     plt.savefig(path)
     plt.close()
 
@@ -193,7 +194,6 @@ def _plot_histogram_for_check(ax, row, check_scores):
     check_name = row['Security Check']
     scores = check_scores[check_name]
     counts, bins, patches = ax.hist(scores, bins=range(12), color='steelblue', edgecolor='none', width=0.85)
-
     bin_centers = 0.5 * (bins[:-1] + bins[1:])
     total = counts.sum()
 
@@ -208,13 +208,13 @@ def _plot_histogram_for_check(ax, row, check_scores):
     ax.set_xticks(bin_centers)
     ax.set_xticklabels([str(i) for i in range(11)], fontsize=16)
     ax.set_xlabel('Security Score', fontsize=18)
-    ax.set_ylabel('Number of Repositories', fontsize=18)
+    ax.set_ylabel('Repositories [n]', fontsize=18)
     ax.set_yscale('log', nonpositive='clip')
     ax.set_yticks([1,10, 100, 1000, 10000])
     ax.set_yticklabels([1, 10, 100, 1000, 10000], fontsize= 16)
     ax.text(0.5, 1.12, f"{check_name}", transform=ax.transAxes,
             fontsize=20, ha='center', va='bottom', fontweight='bold')
-    ax.text(0.5, 1.10, f"n={len(scores)}    Mean={row['Mean']}    Risk: {row['Risk Level']}",
+    ax.text(0.5, 1.10, f"$n$={len(scores)}    Mean={row['Mean']}    Risk: {row['Risk Level']}",
             transform=ax.transAxes, fontsize=18, ha='center', va='top')
 
     for spine in ax.spines.values():
@@ -240,13 +240,13 @@ def _plot_binaer_histogram_for_check(ax, row, check_scores):
         "Count": [count_0, count_1]
     })
 
-    sns.barplot(x="Status", y="Count", data=df, ax=ax, color='steelblue',width=0.2)
+    sns.barplot(x="Status", y="Count", data=df, ax=ax, color='steelblue', edgecolor='none', width=0.2)
     ax.set_xticklabels(BINARY_LABELS[check_name], fontsize=16)
     ax.set_xlabel('Security Status', fontsize=18)
-    ax.set_ylabel('Number of Repositories', fontsize=18)
+    ax.set_ylabel('Repositories [n]', fontsize=18)
     ax.text(0.5, 1.13, f"{check_name}", transform=ax.transAxes,
             fontsize=20, ha='center', va='bottom', fontweight='bold')
-    ax.text(0.5, 1.10, f"n={len(scores)}    Mean={row['Mean']}    Risk: {row['Risk Level']}",
+    ax.text(0.5, 1.10, f"$n$={len(scores)}    Mean={row['Mean']}    Risk: {row['Risk Level']}",
             transform=ax.transAxes, fontsize=18, ha='center', va='top')
 
     total = count_0 + count_1
