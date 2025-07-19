@@ -52,23 +52,35 @@ def main(scorecard_dir, input_txt, exclude_urls, output_json):
 
     print(f"🚀 Running scorecard on {len(repo_urls)} repositories...")
 
+    batch_size = 1  # Define the batch size
+    results_batch = []
+
     for i, repo in enumerate(repo_urls, start=1):
         print(f"[{i}/{len(repo_urls)}] Running scorecard on {repo}...")
         result = run_scorecard(scorecard_dir, repo)
         if result:
-            # Append the new result to the output JSON
-            if os.path.exists(output_json):
-                with open(output_json, 'r', encoding='utf-8') as out_f:
-                    existing_data = json.load(out_f)
-            else:
-                existing_data = []
+            results_batch.append(result)
 
-            existing_data.append(result)
+            # Check if the batch is full or if it's the last repository
+            if len(results_batch) >= batch_size or i == len(repo_urls):
+                # Load existing data from the file
+                if os.path.exists(output_json):
+                    with open(output_json, 'r', encoding='utf-8') as out_f:
+                        existing_data = json.load(out_f)
+                else:
+                    existing_data = []
 
-            with open(output_json, 'w', encoding='utf-8') as out_f:
-                json.dump(existing_data, out_f, indent=4)
+                # Append the batch results to the existing data
+                existing_data.extend(results_batch)
 
-    print(f"✅ Completed. {len(all_results)} results saved to {output_json}")
+                # Write the updated data back to the file
+                with open(output_json, 'w', encoding='utf-8') as out_f:
+                    json.dump(existing_data, out_f, indent=4)
+
+                # Clear the batch for the next set of results
+                results_batch = []
+
+    print(f"✅ Completed. Results saved to {output_json}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run OSSF Scorecard on repositories from a TXT file and save results.")
