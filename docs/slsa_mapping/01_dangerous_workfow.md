@@ -16,22 +16,12 @@
 
 - **Threat D & E:** With the PR checkout, PR authors may compromise the repository, for example, by using build scripts controlled by the author of the PR or reading token in memory; pattern detects whether a workflow's inline script may execute untrusted input from attackers
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat D:** Possible Build from unofficial parameters.
 - **Threat E:** Possible tampering with artifact during build.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -45,7 +35,3 @@
 
 - **Threat D:** Possible Build from unofficial parameters.
 - **Threat E:** Possible tampering with artifact during build.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

@@ -16,21 +16,11 @@
 
 - **Threat I:** Clear guidelines help to recognise and respond to vulnerabilities
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat A:** Loss of user trust.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -43,7 +33,3 @@
 **Final Mapping:**
 
 - **Threat A:** Loss of user trust.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

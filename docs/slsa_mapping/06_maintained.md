@@ -16,21 +16,11 @@
 
 - **Threat I:** reduces technical problems, Kompromittierte Dependencies?
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat A:** Missing security fixes.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -43,7 +33,3 @@
 **Final Mapping:**
 
 - **Threat I:** Unmaintained packages are not safe/secure to use, because they may include security issues.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

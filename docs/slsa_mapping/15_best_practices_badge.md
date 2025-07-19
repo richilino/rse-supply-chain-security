@@ -16,21 +16,11 @@
 
 - **Threat A & B:** Best Practices decreases chance of vulnerabilities in code
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat A:** Loss of user trust.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 

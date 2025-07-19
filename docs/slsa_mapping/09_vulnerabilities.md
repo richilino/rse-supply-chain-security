@@ -16,21 +16,11 @@
 
 - **Threat I:** improper usage by users
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat I:** Software use risks system compromise.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -43,7 +33,3 @@
 **Final Mapping:**
 
 - **Threat I:** Package not usable in a safe manner
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

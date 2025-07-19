@@ -18,22 +18,12 @@
 - **Threat B:** unreviewed changes
 - **Threat C:** reduces risk of admin abuse
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat A:** Loss of user trust.
 - **Threat B:** Submit change without review.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -47,7 +37,3 @@
 
 - **Threat A:** Increased trust and probability of finding vulnerabilities.
 - **Threat B:** Submit change without review.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

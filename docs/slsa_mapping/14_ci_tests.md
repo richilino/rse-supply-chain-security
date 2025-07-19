@@ -17,22 +17,12 @@
 - **Threat A:** decreases chance of vulnerabilities
 - **Threat H:** project must be maintained -> decreases chance of using mal packages?
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat A:** Loss of user trust.
 - **Threat E:** Undetected security regression.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -46,7 +36,3 @@
 
 - **Threat A:** Loss of user trust.
 - **Threat I:** Prevents unsafe use through rigorous testing.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

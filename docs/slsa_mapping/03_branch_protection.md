@@ -16,22 +16,12 @@
 
 - **Threat B:** Directly Submit without review, Highly-permissioned actors bypasses or disables controls
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat B:** Unauthorized merges or pushes.
 - **Threat C:** Platform admin abuses privileges.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -44,7 +34,3 @@
 **Final Mapping:**
 
 - **Threat B:** Directly Submit without review. Highly-permissioned actors bypasses or disables controls
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

@@ -18,21 +18,11 @@
 - **Threat C:** platform admin abuse
 - **Threat F & G:** upload malicious package or provenance
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat C:** Unauthorized workflow triggering.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -46,7 +36,3 @@
 
 - **Threat B:** Use bot account to submit change
 - **Threat C:** Unauthorized workflow triggering.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

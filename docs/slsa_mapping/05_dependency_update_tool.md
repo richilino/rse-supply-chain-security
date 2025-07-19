@@ -17,21 +17,11 @@
 - **Threat A:** [Example or Justification]
 - **Threat H:** sichert sichere Abhängigkeiten -> verhindert Einschleusen kompromittierter Dependencies
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat H:** Malicious package use through developer inattention.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -44,8 +34,4 @@
 **Final Mapping:**
 
 - **Threat H:** Malicious package use through developer inattention or dependency confusion.
-- **Dependnecy Threats:** Fixes Security Flaws in Packages
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.
+- **Dependency Threats:** Fixes Security Flaws in Packages

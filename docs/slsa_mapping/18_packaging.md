@@ -17,22 +17,12 @@
 - **Threat A:** validating official package registries? (metadata documents provenance?)
 - **Threat I:** easier patching of bugs with updates?
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat E:** Tamper with artifact during build.
 - **Threat F:** Tamper with artifact after CI/CD.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -46,7 +36,3 @@
 
 - **Threat E:** Tamper with artifact during build.
 - **Threat F:** Tamper with artifact after CI/CD.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

@@ -16,21 +16,11 @@
 
 - **Threat I:** detection of vulnerabilities
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat I:** Undetected vulnerable code.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -43,7 +33,3 @@
 **Final Mapping:**
 
 - **Threat I:** Undetected vulnerable code.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

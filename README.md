@@ -39,3 +39,13 @@ export GITHUB_AUTH_TOKEN=<your_github_token>
 
 snakemake
 ```
+
+### License
+
+This repository uses a dual-license structure:
+
+Code: Licensed under the [MIT License](LICENSE.md). You are free to use, modify, and distribute the code with proper attribution.
+
+Data: Licensed under the [CC-BY-4.0 License](/data/LICENSE.md). You may share and adapt the data for any purpose, even commercially, with appropriate credit.
+
+Please ensure you comply with the terms of each license when using materials from this repository.

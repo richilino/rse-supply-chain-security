@@ -17,22 +17,12 @@
 - **Threat F:** Tamper with artifact
 - **Threat G:** Replace package
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat F:** Tamper with artifact after CI/CD.
 - **Threat G:** Tamper with artifact after upload.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -46,7 +36,3 @@
 
 - **Threat F:** Tamper with artifact after CI/CD.
 - **Threat G:** Tamper with artifact after upload.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.

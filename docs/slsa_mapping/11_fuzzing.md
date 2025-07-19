@@ -16,21 +16,11 @@
 
 - **Threat A & I:** undetected vulnerabilities (for attackers)
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat I:** Undetected malicious inputs.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
@@ -43,7 +33,3 @@
 **Final Mapping:**
 
 - **Threat I:** Undetected unsafe inputs.
-
----
-
-**Note:** Replace placeholders (e.g., `[Check Name]`, `[Justification]`, `[Note]`) with actual content based on the collaborators' inputs and discussions.
