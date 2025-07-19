@@ -173,20 +173,29 @@ def save_general_scores_plot(general_scores, output_dir):
 
 
 
-# def save_individual_check_plots(check_scores, output_dir):
-#     """Save the distribution of individual check scores as separate PNG images."""
-#     sns.set(style="whitegrid")
-#     for check_name, scores in check_scores.items():
-#         plt.figure(figsize=(8, 6))
-#         sns.histplot(scores, kde=True, color="salmon", bins=10)
-#         plt.title(f'Distribution for: {check_name}')
-#         plt.xlabel('Score')
-#         plt.ylabel('Frequency')
 
-#         filename = f'{check_name.replace(" ", "_")}_distribution.png'
-#         plt.tight_layout()
-#         plt.savefig(os.path.join(output_dir, filename))
-#         plt.close()
+def save_individual_check_plots(check_scores,stats_df, output_dir):
+    """Save the distribution of individual check scores as separate PNG images."""
+    os.makedirs(output_dir, exist_ok=True)
+    sns.set(style="whitegrid")
+    filtered_stats_df = stats_df[stats_df['Security Check'] != 'GENERAL SCORE']
+
+    for _, row in filtered_stats_df.iterrows():
+        check_name = row['Security Check']
+        scores = check_scores[check_name]
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        if check_name in BINARY_CHECKS:
+            _plot_binaer_histogram_for_check(ax, row, check_scores)
+        else:
+            _plot_histogram_for_check(ax, row, check_scores)
+
+        plt.tight_layout()
+        filename = f"{check_name}_distribution.png".replace(" ", "_")
+        path = os.path.join(output_dir, filename)
+        plt.savefig(path)
+        plt.close(fig)
 
 
 def _plot_histogram_for_check(ax, row, check_scores):
@@ -269,36 +278,27 @@ def _plot_binaer_histogram_for_check(ax, row, check_scores):
     ax.yaxis.grid(True, which='minor', linestyle=':', linewidth=0.8,color='#AAAAAA' )
 
 
-def save_all_checks_multiplot(check_scores, stats_df, output_dir):
-    """Save a plot containing all check score distributions."""
+def save_all_checks_as_single_plots(check_scores, stats_df, output_dir):
+    """"Save a plot containing all check score distributions."""
     sns.set(style="whitegrid")
-
     filtered_stats_df = stats_df[stats_df['Security Check'] != 'GENERAL SCORE']
-    num_checks = len(check_scores)
-    num_columns = 3
-    num_rows = (num_checks + num_columns - 1) // num_columns
 
-    fig, axes = plt.subplots(num_rows, num_columns, figsize=(25, num_rows * 4))
-    axes = axes.flatten()
-
-    for i, (_, row) in enumerate(filtered_stats_df.iterrows()):
-        ax = axes[i]
+    for _, row in filtered_stats_df.iterrows():
         check_name = row['Security Check']
         scores = check_scores[check_name]
+        fig, ax = plt.subplots(figsize=(6, 8))
 
         if check_name in BINARY_CHECKS:
-            _plot_binaer_histogram_for_check(ax, row, check_scores)   
+            _plot_binaer_histogram_for_check(ax, row, check_scores)
         else:
             _plot_histogram_for_check(ax, row, check_scores)
-        
 
-    for j in range(len(check_scores), len(axes)):
-        fig.delaxes(axes[j])
-
-    path = os.path.join(output_dir, 'all_checks_distribution.png')
-    plt.tight_layout(h_pad=4, w_pad=9)
-    plt.savefig(path)
-    plt.close()
+        plt.tight_layout()
+        filename = f'{check_name}_distribution.png'.replace(" ", "_")
+        path = os.path.join(output_dir, filename)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        plt.savefig(path)
+        plt.close(fig)
 
 
 def plot_high_risk_checks(check_scores, stats_df, output_dir):
@@ -408,13 +408,15 @@ def main():
     stats_df = create_stats_table(general_scores, check_scores, total_repositories)
     plot_stats_table(stats_df, args.output_dir)
 
-    save_general_scores_plot(general_scores, args.output_dir)
-    #save_individual_check_plots(check_scores, args.output_dir)
+    #save_general_scores_plot(general_scores, args.output_dir)
+
+    
    
-    plot_top_high_risk_checks(check_scores, stats_df, args.output_dir)
-    plot_lowest_high_risk_checks(check_scores, stats_df, args.output_dir)
-    plot_high_risk_checks(check_scores, stats_df, args.output_dir)
-    save_all_checks_multiplot(check_scores, stats_df, args.output_dir)
+    #plot_top_high_risk_checks(check_scores, stats_df, args.output_dir)
+    #plot_lowest_high_risk_checks(check_scores, stats_df, args.output_dir)
+    #plot_high_risk_checks(check_scores, stats_df, args.output_dir)
+    #save_all_checks_multiplot(check_scores, stats_df, args.output_dir)
+    save_individual_check_plots(check_scores, stats_df, os.path.join(args.output_dir, "single_plots"))
 
     print(f"✅ Plots saved to {args.output_dir}")
 
