@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+title: >-
+  Data & Code for "Evaluating Software Supply Chain Security
+  in Research Software"
+message: >-
+  If you use this software, please cite our corresponding paper.
+type: software
+authors:
+  - given-names: Richard
+    family-names: Hegewald
+    email: richard.hegewald@uni-potsdam.de
+    affiliation: University of Potsdam
+    orcid: "https://orcid.org/0009-0006-3953-6445"
+  - given-names: Rebecca
+    family-names: Beyer
+    email: rebecca.beyer@uni-potsdam.de
+    affiliation: University of Potsdam
+    orcid: "https://orcid.org/0009-0005-3204-4459"
+repository-code: "https://github.com/richilino/rse-supply-chain-security"
+date-released: 2025-07-21
+license:
+  - MIT
+  - CC-BY-4.0
+preferred-citation:
+  type: conference-paper
+  title: Evaluating Software Supply Chain Security in Research Software
+  year: 2025
+  authors:
+    - given-names: Richard
+      family-names: Hegewald
+      email: richard.hegewald@uni-potsdam.de
+      affiliation: University of Potsdam
+      orcid: "https://orcid.org/0009-0006-3953-6445"
+    - given-names: Rebecca
+      family-names: Beyer
+      email: rebecca.beyer@uni-potsdam.de
+      affiliation: University of Potsdam
+      orcid: "https://orcid.org/0009-0005-3204-4459"
