@@ -18,22 +18,12 @@
 - **Threat G:** Build with manipulated dependencies
 - **Threat H:** Dependency Confusion
 
-**Notes:**
-
-- [Note 1]
-- [Note 2]
-
 ### Richard Hegewald
 
 **Mapping:**
 
 - **Threat D:** Build from unofficial paramters.
 - **Threat H:** Unintentional use of malicious dependency version.
-
-**Notes:**
-
-- [Note 1]
-- [Note 2]
 
 ---
 
