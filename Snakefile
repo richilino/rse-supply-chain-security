@@ -15,9 +15,9 @@ rule all:
 # RSD
 
 rule download_rsd_repository_data:
-    output: "data/api/joss"
+    output: "data/api/rsd_repository_data.json"
     shell: 
-        """python src/fetch_joss_data {output}"""
+        """curl https://research-software-directory.org/api/v1/repository_url > {output}"""
 
 rule filter_rsd_repository_data:
     input: "data/api/rsd_repository_data.json"
@@ -28,9 +28,9 @@ rule filter_rsd_repository_data:
 # JOSS
 
 rule download_joss_repository_data:
-    output: "data/api/joss_repository_data.json"
-    shell:
-        """curl "https://api.github.com/repos/openjournals/joss-reviews/issues?state=all&labels=accepted&per_page=100" -o {output}"""
+    output: "data/api/joss"
+    shell: 
+        """python src/fetch_joss_data {output}"""
 
 rule filter_joss_repository_data:
     input: "data/api/joss"
