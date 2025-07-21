@@ -1,4 +1,4 @@
-# Supply Chain Security Analysis of Research Software
+# Supplemental Material - Evaluating Software Supply Chain Security in Research Software
 
 This repository contains the produced data, code and supplemental documentation needed for the reproduction of:
 
