@@ -40,7 +40,7 @@ def save_general_scores_plot(general_scores, output_dir):
     """Save the distribution of general scores as a PNG image."""
     sns.set(style="whitegrid")
     plt.figure(figsize=(8, 6))
-    sns.histplot(general_scores, kde=True, color="skyblue", bins=10)
+    sns.histplot(general_scores, kde=True, color="skyblue", bins=10, binrange=[0,10])
     plt.title('Distribution of General Scores')
     plt.xlabel('General Score')
     plt.ylabel('Frequency')
@@ -55,7 +55,7 @@ def save_individual_check_plots(check_scores, output_dir):
     sns.set(style="whitegrid")
     for check_name, scores in check_scores.items():
         plt.figure(figsize=(8, 6))
-        sns.histplot(scores, kde=True, color="salmon", bins=10)
+        sns.histplot(scores, kde=True, color="salmon", bins=10, binrange=[0,10])
         plt.title(f'Distribution for: {check_name}')
         plt.xlabel('Score')
         plt.ylabel('Frequency')
@@ -77,7 +77,7 @@ def save_all_checks_multiplot(check_scores, output_dir):
 
     for i, (check_name, scores) in enumerate(check_scores.items()):
         ax = axes[i]
-        sns.histplot(scores, kde=True, ax=ax, color="salmon", bins=10)
+        sns.histplot(scores, kde=True, ax=ax, color="salmon", bins=10, binrange=[0,10])
         ax.set_title(check_name)
         ax.set_xlabel('Score')
         ax.set_ylabel('Frequency')
