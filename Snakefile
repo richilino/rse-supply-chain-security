@@ -15,15 +15,15 @@ rule all:
 # RSD
 
 rule download_rsd_repository_data:
-    output: "data/api/rsd_repository_data.json"
+    output: "data/api/joss"
     shell: 
-        """curl https://research-software-directory.org/api/v1/repository_url -o {output}"""
+        """python src/fetch_joss_data {output}"""
 
 rule filter_rsd_repository_data:
     input: "data/api/rsd_repository_data.json"
     output: "data/urls/rsd_repository_urls.txt"
     shell:
-        """cat {input} |  jq '[.[] | select(.code_platform == "github") | {{url: .url}}]' | grep -Eo \"(http|https)://github.com/[a-zA-Z0-9_-]*/[a-zA-Z0-9_-]*\" | sort -u > {output}"""
+        """cat {input} |  jq '[.[] | select(.code_platform == "github") | {{url: .url}}]' | grep -Eo \"(http|https)://github.com/[a-zA-Z0-9_.-]*/[a-zA-Z0-9_.-]*[a-zA-Z0-9_-]+\" | sed 's|\.git$||g' | sort -u > {output}"""
 
 # JOSS
 
@@ -39,7 +39,7 @@ rule filter_joss_repository_data:
         """
         for file in {input}/joss_repository_data.*.json; do
             if [ -f \"$file\" ]; then
-                cat \"$file\" | jq '[.[] | {{url: .body}}]' | grep -Eo \"(http|https)://github.com/[a-zA-Z0-9_-]*/[a-zA-Z0-9_-]*\"
+                cat \"$file\" | jq '[.[] | {{url: .body}}]' | grep -Eo \"(http|https)://github.com/[a-zA-Z0-9_.-]*/[a-zA-Z0-9_.-]*[a-zA-Z0-9_-]+\" | sed 's|\.git$||g'
             fi
         done | sort -u > {output}
         """
