@@ -67,12 +67,6 @@ def extract_scores(data):
             check_name = check.get('name', 'Unknown Check')
             check_score = check.get('score', 0)
 
-            # if check_name == "Packaging": # Für Packaging: -1 als 0 zählen, da -1 bedeutet kein Packaging gefunden
-            #     if check_score == -1:
-            #         check_score = 0
-            #     check_scores.setdefault(check_name, []).append(check_score)
-            #else:
-                # Für alle anderen Checks: -1 überspringen
             if check_score == -1: # Skip N/A scores
                 continue
             else: check_scores.setdefault(check_name, []).append(check_score)
